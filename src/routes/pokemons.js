@@ -1,12 +1,14 @@
 const { Router } = require('express');
-const { getAllPokemons } = require('../controllers/pokemons.js')
+const { getAllPokemons,getByTypes} = require('../controllers/pokemons.js')
 
 
 const router = Router();
+router.get('/sync', getAllPokemons);
+router.get('/bytypes', getByTypes);
 
-router.get('/', getAllPokemons);
 
-// router.get('/:id', getBookById);
+
+
 
 
 module.exports = router;
