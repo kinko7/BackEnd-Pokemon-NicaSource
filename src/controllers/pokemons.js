@@ -1,6 +1,6 @@
-const { Pokemons, Types } = require('../db');
+const { Pokemons, Types, poke_type } = require('../db');
 const axios = require('axios');
-const { v4: uuidv4 } = require('uuid');
+const { uuid:v4 } = require('uuidv4');
 
 async function getApi() {
    try {
@@ -36,20 +36,19 @@ async function getAllPokemons(req, res, next) {
    if(name) {
        //busco api
        return axios.get('https://pokeapi.co/api/v2/pokemon/' + name)
-       .then(r => {
+       .then(response => {
            let pokemonSearched = {
-               id: r.data.id,
-               name: r.data.forms[0].name,
-               img: r.data.sprites.other.dream_world.front_default,
-               height: r.data.height,
-               weight: r.data.weight,
-               hp: r.data.stats[0].base_stat,
-               attack: r.data.stats[1].base_stat,
-               defense: r.data.stats[2].base_stat,
-               speed: r.data.stats[5].base_stat,
-               types: r.data.types.map((t) =>{return {name:t.type.name}})
+               id: response.data.id,
+               name: response.data.forms[0].name,
+               img: response.data.sprites.other.dream_world.front_default,
+               height: response.data.height,
+               weight: response.data.weight,
+               attack: response.data.stats[1].base_stat,
+               defense: response.data.stats[2].base_stat,
+               speed: response.data.stats[5].base_stat,
+               types: response.data.types.map((t) =>{return {name:t.type.name}})
            }
-           res.json(pokemonSearched)
+           response.json(pokemonSearched)
        }) 
        .catch(() => {
            //busco db
@@ -61,9 +60,9 @@ async function getAllPokemons(req, res, next) {
                    { model: Types, attributes: ["name"], through: { attributes: [] } }
                ]
            })
-           .then((r) => {
-           if (r) {
-              return res.send(r);
+           .then((response) => {
+           if (response) {
+              return res.send(response);
            }
            return res.status(404).send({error: 'pokemon not found'});
         });    
@@ -73,7 +72,7 @@ async function getAllPokemons(req, res, next) {
        })
    };
 
-   //Armo la lista de pokemons que voy a mostrar en home
+   //Armo la lista de pokemons con la data
    const pokeApi = await getApi();
    let pokeMine = await Pokemons.findAll({ include: [
        { model: Types, attributes: ["name"], through: { attributes: [] } }
@@ -93,8 +92,36 @@ async function getAllPokemons(req, res, next) {
    })  
 };
 
+const getByTypes = async (req, res) => {
+const {type} = req.query
+     try{ 
+         
+   
+    if (type) {
+    types = await Types.findAll({
+        where: {
+           types:type
+        },
+        include: [
+            { model: Pokemons, attributes: ["name"], through: { attributes: [] } }
+        ]
+    })
+    }
+    console.log("AAAAAAAAAAAAAAAAA",types)
+    return res.json(types)
+} catch (error) {
+    console.log(error)
+}
+}
+      
+    
+
+    
+ 
+    
 module.exports = {
    getAllPokemons,
+   getByTypes
    
 
 };
