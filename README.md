@@ -14,7 +14,7 @@ You will be using this service https://pokeapi.co/. The POKEMON API is free, acc
 
 
 
-You should provide an endpoint called /sync, this endpoint will perform the initial data fetching and will process the insertions in your database. You will also enable an endpoint to update any Pokemon in your database, but every time you call the /sync endpoint, the data should be overwritten by the response provided by Pokémon API. Your API should expose endpoints to get the list of pokemon and allow searches by id/name and type.
+You should provide an endpoint called /sync, this endpoint will perform the initial data fetching and will process the insertions in your database.( You will also enable an endpoint to update any Pokemon in your database, but every time you call the /sync endpoint, the data should be overwritten by the response provided by Pokémon API. Your API should expose endpoints to get the list of pokemon and allow searches by id/name and type.)
 
 
 

@@ -39,7 +39,7 @@ const getPokeById = async (req, res) => {
           });
           if (pokemon)return res.json(pokemon);
           else {
-              res.status(400).json('Invalid ID')
+              res.json('Invalid ID')
           }
       }
   } catch (error) {
@@ -66,24 +66,38 @@ const getPokeById = async (req, res) => {
     }
 
 
-const updatePoke = async (req,res) => {
-    try { 
-        let id = req.params.id;
-        let data = {...req.body}; 
-        // let {name,attack,defense,speed,height, weight,img} = req.body;
-            await Pokemons.update({data},
-                    {
-                where: {
-                    id,
-                },
-                    }
-            );
-            return res.send("No Updated")
-        } catch (error) {
-         res.send("No Update")
-         }
-     }
-
+    const updatePoke = async (req,res) => {
+      const id = req.params.id; 
+      const {name,img,attack,defense,speed,height,weight,types} = req.body;
+      try{
+      await Pokemons.update(
+        {
+          name,
+          img,
+          attack,
+          defense,
+          speed,
+          height,
+          weight,
+         
+        },
+        { where: {id: id} }
+        )
+      
+        let updatedPoke= await Pokemons.findByPk(id)
+        const type = await Types.findOne({
+          where: { id: parseInt(types) },
+        });
+        await eventUpdated.setCategories(type);
+      return res.json(updatedPoke) } catch (error) {
+        console.log(error)
+    }
+ 
+        return  res.send("No Update")
+    
+  }
+      
+    
 
 const deletePoke = async (req, res, next) => {
     let id = req.params.id

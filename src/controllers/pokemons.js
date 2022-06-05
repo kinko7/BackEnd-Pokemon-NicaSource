@@ -6,7 +6,7 @@ async function getApi() {
    try {
        const pokemonsList = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=40`)
        let pokemonsData = [];
-
+      
        for (obj of pokemonsList.data.results) {
            let dataObj = await axios.get(`${obj.url}`);
            pokemonsData.push({
@@ -21,8 +21,11 @@ async function getApi() {
                speed: dataObj.data.stats[5].base_stat,
                types: dataObj.data.types.map((t) =>{return {name:t.type.name}})
            })
+           return pokemonsData;
        }
-       return pokemonsData;
+      const bulkData= await Pokemons.bulkCreate(pokemonsData);
+       return res.json(bulkData);
+
    } catch (err) {
        console.log(err);
    }
@@ -48,6 +51,7 @@ async function getAllPokemons(req, res, next) {
                speed: response.data.stats[5].base_stat,
                types: response.data.types.map((t) =>{return {name:t.type.name}})
            }
+           
            response.json(pokemonSearched)
        }) 
        .catch(() => {
@@ -92,36 +96,78 @@ async function getAllPokemons(req, res, next) {
    })  
 };
 
-const getByTypes = async (req, res) => {
-const {type} = req.query
-     try{ 
-         
-   
-    if (type) {
-    types = await Types.findAll({
-        where: {
-           types:type
-        },
-        include: [
-            { model: Pokemons, attributes: ["name"], through: { attributes: [] } }
-        ]
-    })
-    }
-    console.log("AAAAAAAAAAAAAAAAA",types)
-    return res.json(types)
-} catch (error) {
-    console.log(error)
-}
-}
-      
+// const searchdata = async (req,res) => {
+//     const dataBase = await Pokemons.findAll({
+//       include: [
+//         {
+//           model: Types,
+//           through: {
+//             attributes: [],
+//           },
+//         },
+//       ],
+//     });
+//     console.log("AAAAAAAAAAAAAAAAAAA",dataBase)
+//     if (dataBase.length > 0) {
+//         const pokeDb = await dataBase.map((data) => {
+//             return {
+//                 id:data.id,
+//                 name:data.name,
+//                 height:data.height,
+//                 weight:data.weight,
+//                 // types:data.types.map((t) =>{return {name:t.type.name}})
+//                     };          
+//           });
+//           return pokeDb
+//         }
+//       }
     
 
-    
+//   const  getByTypes = async  (req, res, next) =>{
+//     let { id } = req.query;
+  
+//     try {
+//       const pokeDB = await searchdata();
+  
+//       const filters = [];
+  
+//       pokeDB.map((e) => (e.types.id=== id ? filters.push(e) : null));
+  
+//       filters.length > 0
+//         ? res.send(filters)
+//         : res.send("No poke exists");
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+  
+
+const getByTypes = async (req, res) => {
+    const {id} = req.params
+const {name} = req.query
+     try{ 
+         
+    if (name) {
+  let typ= await Pokemons.findAll({
+        where: {
+            name:"name"
+        },
+        include: [
+            { model: Types, attributes: ["name"], through: { attributes: [] } }
+        ]
+    })
+    return res.send(typ)
+    }
+ 
+} catch (error) {
+    console.log(error)
+   }
+}
+      
+       
  
     
 module.exports = {
    getAllPokemons,
    getByTypes
-   
-
 };
