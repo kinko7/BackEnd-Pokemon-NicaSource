@@ -168,6 +168,5 @@ const {name} = req.query
  
     
 module.exports = {
-   getAllPokemons,
-   getByTypes
+
 };
