@@ -97,8 +97,6 @@ const getPokeById = async (req, res) => {
     
   }
       
-    
-
 const deletePoke = async (req, res, next) => {
     let id = req.params.id
    
