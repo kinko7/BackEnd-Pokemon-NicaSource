@@ -14,8 +14,8 @@ const pokemon = {
 
 describe('Pokemon routes', () => {
     
-    describe('GET /pokemon', () => {
-        it('should get 200', () => agent.get('/pokemon').expect(200)).timeout(40000);
+    describe('GET /sync', () => {
+        it('should get 200', () => agent.get('/sync').expect(200)).timeout(40000);
     
     });
 
