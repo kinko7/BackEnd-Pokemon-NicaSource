@@ -1,10 +1,9 @@
 Assessment API Pokemon build with Node, Express, Postgres & Sequelie
 Features: Filter by name, id, types. Create a new Pokemon with associate type, update
 and delete.
-
--npm install
--npm start
-
+DB_NAME='pokemon
+npm install
+npm start
 
 Endpoints
 
