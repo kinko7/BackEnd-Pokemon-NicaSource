@@ -4,6 +4,7 @@ const { uuid:v4 } = require('uuidv4');
 
 async function getApi() {
    try {
+   
        const pokemonsList = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=40`)
        let pokemonsData = [];
       
@@ -21,17 +22,16 @@ async function getApi() {
                speed: dataObj.data.stats[5].base_stat,
                types: dataObj.data.types.map((t) =>{return {name:t.type.name}})
            })
-           return pokemonsData;
-       }
-      const bulkData= await Pokemons.bulkCreate(pokemonsData);
-       return res.json(bulkData);
+        }
+        return pokemonsData;
+        //    return res.json(pokemonsData)
+      
 
    } catch (err) {
        console.log(err);
    }
-
 };
-
+ 
 //traigo todos y y si hay name, busco por name
 async function getAllPokemons(req, res, next) {
    const { name } = req.query;
@@ -68,7 +68,6 @@ async function getAllPokemons(req, res, next) {
            if (response) {
               return res.send(response);
            }
-           return res.status(404).send({error: 'pokemon not found'});
         });    
        })
        .catch(()=>{
@@ -96,77 +95,56 @@ async function getAllPokemons(req, res, next) {
    })  
 };
 
-// const searchdata = async (req,res) => {
-//     const dataBase = await Pokemons.findAll({
-//       include: [
-//         {
-//           model: Types,
-//           through: {
-//             attributes: [],
-//           },
-//         },
-//       ],
-//     });
-//     console.log("AAAAAAAAAAAAAAAAAAA",dataBase)
-//     if (dataBase.length > 0) {
-//         const pokeDb = await dataBase.map((data) => {
-//             return {
-//                 id:data.id,
-//                 name:data.name,
-//                 height:data.height,
-//                 weight:data.weight,
-//                 // types:data.types.map((t) =>{return {name:t.type.name}})
-//                     };          
-//           });
-//           return pokeDb
-//         }
-//       }
+const searchdata = async (req,res) => {
+    const dataBase = await Pokemons.findAll({
+      include: [
+        {
+          model: Types,
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
+    console.log("AAAAAAAAAAAAAAAAAAA",dataBase)
+    if (dataBase.length > 0) {
+        const pokeDb = await dataBase.map((data) => {
+            return {
+                id:data.id,
+                name:data.name,
+                height:data.height,
+                weight:data.weight,
+                types:data.types.map((t) =>{return {name:t.type.name}})
+                    };          
+          });
+          return pokeDb
+        }
+      }
     
 
-//   const  getByTypes = async  (req, res, next) =>{
-//     let { id } = req.query;
+  const  getByTypes = async  (req, res, next) =>{
+    let { id } = req.query;
   
-//     try {
-//       const pokeDB = await searchdata();
+    try {
+      const pokeDB = await searchdata();
   
-//       const filters = [];
-  
-//       pokeDB.map((e) => (e.types.id=== id ? filters.push(e) : null));
-  
-//       filters.length > 0
-//         ? res.send(filters)
-//         : res.send("No poke exists");
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
+      const filters = [];
+  console.log("WWWWWWWWWWW",pokeDB)
+      pokeDB.map((e) => (e.types == id ? filters.push(e) : null));
+      console.log("ZZZZZZZZZZZZZZZZZ",filters)
+      filters.length > 0
+        ? res.send(filters)
+        : res.send("No poke exists");
+    } catch (error) {
+      next(error);
+    }
+  }
   
 
-const getByTypes = async (req, res) => {
-    const {id} = req.params
-const {name} = req.query
-     try{ 
-         
-    if (name) {
-  let typ= await Pokemons.findAll({
-        where: {
-            name:"name"
-        },
-        include: [
-            { model: Types, attributes: ["name"], through: { attributes: [] } }
-        ]
-    })
-    return res.send(typ)
-    }
- 
-} catch (error) {
-    console.log(error)
-   }
-}
-      
-       
- 
+
+    
     
 module.exports = {
-
+    getAllPokemons,
+    getByTypes
 };

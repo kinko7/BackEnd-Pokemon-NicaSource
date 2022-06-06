@@ -108,6 +108,7 @@ const deletePoke = async (req, res, next) => {
           id: id
         }
       })
+      
       return res.send('Pokemon deleted')
     } catch (error) {
       next(error)
