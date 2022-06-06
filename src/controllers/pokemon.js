@@ -30,7 +30,7 @@ const getPokeById = async (req, res) => {
           return res.json(pokemon);
 
       } else {
-          // console.log(await 'im in')
+          
           const pokemon = await Pokemons.findByPk(String(id), {
               include: {
                   model: Types,
