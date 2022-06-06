@@ -4,7 +4,7 @@ const { uuid:v4 } = require('uuidv4');
 
 async function getApi() {
    try {
-   
+
        const pokemonsList = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=40`)
        let pokemonsData = [];
       
