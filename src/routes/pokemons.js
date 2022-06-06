@@ -7,10 +7,10 @@ const router = Router();
 
 router.get('/sync', getAllPokemons);
 router.get('/pokemons/bytypes', getByTypes);
-router.post('/pokemon', createPoke);
 router.get('/pokemon/:id', getPokeById)
-router.delete('/pokemon/:id', deletePoke)
+router.post('/pokemon', createPoke);
 router.patch('/pokemon/:id', updatePoke);
+router.delete('/pokemon/:id', deletePoke)
 
 
 
