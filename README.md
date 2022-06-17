@@ -6,7 +6,8 @@ and delete.
 
 ![Apoke](https://user-images.githubusercontent.com/68755402/173983940-dc625612-1278-485b-a652-60dc0358891d.jpg)
 
-NPM install
+npm install
+npm start
 
 Endpoints
 ALL POKES
